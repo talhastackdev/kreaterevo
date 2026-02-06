@@ -1,23 +1,28 @@
 import { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Menu, Globe } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Menu, ChevronDown } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 import {
   Sheet,
   SheetContent,
   SheetTrigger,
 } from '@/components/ui/sheet';
-
-const navLinks = [
-  { label: 'Services', href: '/services' },
-  { label: 'Case Studies', href: '/case-studies' },
-  { label: 'About', href: '/about' },
-  { label: 'Contact', href: '/contact' },
-];
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { language, setLanguage, t } = useLanguage();
+
+  // Extract current path without language prefix
+  const currentPath = location.pathname.replace(/^\/(en|de)/, '') || '/';
 
   useEffect(() => {
     const handleScroll = () => {
@@ -28,11 +33,26 @@ export default function Navbar() {
   }, []);
 
   const isActive = (path: string) => {
+    const fullPath = `/${language}${path}`;
     if (path === '/services') {
-      return location.pathname.startsWith('/services');
+      return location.pathname.startsWith(`/${language}/services`);
     }
-    return location.pathname === path;
+    return location.pathname === fullPath || (path === '/' && location.pathname === `/${language}`);
   };
+
+  const handleLanguageChange = (newLang: 'en' | 'de') => {
+    setLanguage(newLang);
+    // Navigate to same page in new language
+    const newPath = `/${newLang}${currentPath}`;
+    navigate(newPath);
+  };
+
+  const navLinks = [
+    { label: t('nav.home') as string, href: '/' },
+    { label: t('nav.services') as string, href: '/services' },
+    { label: t('nav.about') as string, href: '/about' },
+    { label: t('nav.contact') as string, href: '/contact' },
+  ];
 
   return (
     <header
@@ -45,7 +65,7 @@ export default function Navbar() {
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 lg:h-20">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2">
+          <Link to={`/${language}`} className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
               <span className="text-primary-foreground font-display font-bold text-lg">K</span>
             </div>
@@ -59,7 +79,7 @@ export default function Navbar() {
             {navLinks.map((link) => (
               <Link
                 key={link.href}
-                to={link.href}
+                to={`/${language}${link.href}`}
                 className={`nav-link ${isActive(link.href) ? 'nav-link-active' : ''}`}
               >
                 {link.label}
@@ -69,21 +89,41 @@ export default function Navbar() {
 
           {/* Right side actions */}
           <div className="flex items-center gap-3">
-            {/* Language toggle - placeholder */}
-            <button 
-              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-              title="Language switch (coming soon)"
-            >
-              <Globe className="w-4 h-4" />
-              <span>EN</span>
-            </button>
+            {/* Language Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button 
+                  className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                  aria-label="Select language"
+                >
+                  <span className="uppercase">{language}</span>
+                  <ChevronDown className="w-4 h-4" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="min-w-[80px]">
+                <DropdownMenuItem 
+                  onClick={() => handleLanguageChange('en')}
+                  className={language === 'en' ? 'bg-primary/10 text-primary' : ''}
+                >
+                  <span className="uppercase font-medium">EN</span>
+                  <span className="ml-2 text-muted-foreground">English</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem 
+                  onClick={() => handleLanguageChange('de')}
+                  className={language === 'de' ? 'bg-primary/10 text-primary' : ''}
+                >
+                  <span className="uppercase font-medium">DE</span>
+                  <span className="ml-2 text-muted-foreground">Deutsch</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
 
             {/* CTA Button - Desktop */}
             <Link
-              to="/contact"
+              to={`/${language}/contact`}
               className="hidden lg:inline-flex btn-primary text-sm"
             >
-              Book a Call
+              {t('nav.bookCall')}
             </Link>
 
             {/* Mobile menu */}
@@ -98,7 +138,7 @@ export default function Navbar() {
                   {navLinks.map((link) => (
                     <Link
                       key={link.href}
-                      to={link.href}
+                      to={`/${language}${link.href}`}
                       onClick={() => setIsOpen(false)}
                       className={`text-lg font-medium ${
                         isActive(link.href) ? 'text-primary' : 'text-foreground'
@@ -109,15 +149,44 @@ export default function Navbar() {
                   ))}
                   <hr className="border-border" />
                   <Link
-                    to="/contact"
+                    to={`/${language}/contact`}
                     onClick={() => setIsOpen(false)}
                     className="btn-primary"
                   >
-                    Book a Call
+                    {t('nav.bookCall')}
                   </Link>
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Globe className="w-4 h-4" />
-                    <span>EN / DE</span>
+                  
+                  {/* Mobile Language Switcher */}
+                  <div className="pt-4 border-t border-border">
+                    <p className="text-sm text-muted-foreground mb-3">Language / Sprache</p>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => {
+                          handleLanguageChange('en');
+                          setIsOpen(false);
+                        }}
+                        className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium transition-colors ${
+                          language === 'en' 
+                            ? 'bg-primary text-primary-foreground' 
+                            : 'bg-secondary text-foreground hover:bg-secondary/80'
+                        }`}
+                      >
+                        EN
+                      </button>
+                      <button
+                        onClick={() => {
+                          handleLanguageChange('de');
+                          setIsOpen(false);
+                        }}
+                        className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium transition-colors ${
+                          language === 'de' 
+                            ? 'bg-primary text-primary-foreground' 
+                            : 'bg-secondary text-foreground hover:bg-secondary/80'
+                        }`}
+                      >
+                        DE
+                      </button>
+                    </div>
                   </div>
                 </div>
               </SheetContent>

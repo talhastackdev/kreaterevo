@@ -1,9 +1,10 @@
 import { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Check, Cloud, Server, GitBranch, Activity } from 'lucide-react';
+import { ArrowRight, Check, Cloud, Server, GitBranch, Activity, Users, Wrench, HeadphonesIcon, Building2, Code, Shield, Eye, FileCode } from 'lucide-react';
 import SEO, { organizationSchema, faqSchema } from '@/components/SEO';
-import { ModuleCard, ServiceCard, StatCard, TestimonialCard, ProcessCard, PricingCard } from '@/components/ModuleCard';
-import { services, caseStudies, testimonials, faqs, processSteps, pricingPlans, whyChooseUs } from '@/data/content';
+import { ModuleCard, ServiceCard, ProcessCard } from '@/components/ModuleCard';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { services, whyChooseUs } from '@/data/content';
 import {
   Accordion,
   AccordionContent,
@@ -13,9 +14,9 @@ import {
 
 export default function Home() {
   const heroRef = useRef<HTMLDivElement>(null);
+  const { language, t } = useLanguage();
 
   useEffect(() => {
-    // Simple entrance animation
     const timer = setTimeout(() => {
       if (heroRef.current) {
         heroRef.current.classList.add('opacity-100');
@@ -25,21 +26,112 @@ export default function Home() {
     return () => clearTimeout(timer);
   }, []);
 
-  const scrollToContact = () => {
-    const element = document.getElementById('contact');
-    element?.scrollIntoView({ behavior: 'smooth' });
-  };
+  // Process steps with translations
+  const processSteps = [
+    { number: '01', title: t('process.step1.title') as string, description: t('process.step1.desc') as string },
+    { number: '02', title: t('process.step2.title') as string, description: t('process.step2.desc') as string },
+    { number: '03', title: t('process.step3.title') as string, description: t('process.step3.desc') as string },
+    { number: '04', title: t('process.step4.title') as string, description: t('process.step4.desc') as string },
+  ];
+
+  // Engagement models with translations
+  const engagementModels = [
+    {
+      icon: Users,
+      title: t('engagement.model1.title') as string,
+      whoFor: t('engagement.model1.for') as string,
+      problems: t('engagement.model1.problems') as string[],
+      outcomes: t('engagement.model1.outcomes') as string[],
+    },
+    {
+      icon: Wrench,
+      title: t('engagement.model2.title') as string,
+      whoFor: t('engagement.model2.for') as string,
+      problems: t('engagement.model2.problems') as string[],
+      outcomes: t('engagement.model2.outcomes') as string[],
+    },
+    {
+      icon: HeadphonesIcon,
+      title: t('engagement.model3.title') as string,
+      whoFor: t('engagement.model3.for') as string,
+      problems: t('engagement.model3.problems') as string[],
+      outcomes: t('engagement.model3.outcomes') as string[],
+    },
+    {
+      icon: Building2,
+      title: t('engagement.model4.title') as string,
+      whoFor: t('engagement.model4.for') as string,
+      problems: t('engagement.model4.problems') as string[],
+      outcomes: t('engagement.model4.outcomes') as string[],
+    },
+  ];
+
+  // Engineering approach items
+  const engineeringApproach = [
+    {
+      icon: Code,
+      title: language === 'de' ? 'Infrastructure as Code' : 'Infrastructure as Code',
+      description: language === 'de' 
+        ? 'Wiederholbare, versionierte Infrastrukturdefinition mit Terraform und Pulumi. Jede Änderung wird getestet und dokumentiert.'
+        : 'Repeatable, versioned infrastructure definition with Terraform and Pulumi. Every change is tested and documented.',
+    },
+    {
+      icon: GitBranch,
+      title: language === 'de' ? 'CI/CD-Automatisierung' : 'CI/CD Automation',
+      description: language === 'de'
+        ? 'Kontinuierliche Integration und Bereitstellung mit automatisierten Tests, Code-Reviews und Deployment-Pipelines.'
+        : 'Continuous integration and delivery with automated testing, code reviews, and deployment pipelines.',
+    },
+    {
+      icon: Cloud,
+      title: language === 'de' ? 'Kubernetes & Plattform-Engineering' : 'Kubernetes & Platform Engineering',
+      description: language === 'de'
+        ? 'Container-Orchestrierung, Service-Mesh, und interne Entwicklerplattformen für skalierbare Systeme.'
+        : 'Container orchestration, service mesh, and internal developer platforms for scalable systems.',
+    },
+    {
+      icon: Shield,
+      title: language === 'de' ? 'Sicherheit & Least Privilege' : 'Security & Least Privilege',
+      description: language === 'de'
+        ? 'Rolle-basierte Zugriffskontrolle, Audit-Logging, und Verschlüsselung als Standard in jeder Umgebung.'
+        : 'Role-based access control, audit logging, and encryption as standard in every environment.',
+    },
+    {
+      icon: Eye,
+      title: language === 'de' ? 'Observability & Monitoring' : 'Observability & Monitoring',
+      description: language === 'de'
+        ? 'Zentralisierte Logs, Metriken und Tracing für vollständige Systemübersicht und schnelle Fehleranalyse.'
+        : 'Centralized logs, metrics, and tracing for complete system visibility and rapid issue analysis.',
+    },
+    {
+      icon: FileCode,
+      title: language === 'de' ? 'Dokumentation & Runbooks' : 'Documentation & Runbooks',
+      description: language === 'de'
+        ? 'Jede Architekturentscheidung und jeder Prozess wird dokumentiert. Wissenstransfer ist integraler Bestandteil.'
+        : 'Every architectural decision and process is documented. Knowledge transfer is an integral part.',
+    },
+  ];
+
+  // FAQs with translations
+  const faqs = [
+    { question: t('faq.q1') as string, answer: t('faq.a1') as string },
+    { question: t('faq.q2') as string, answer: t('faq.a2') as string },
+    { question: t('faq.q3') as string, answer: t('faq.a3') as string },
+    { question: t('faq.q4') as string, answer: t('faq.a4') as string },
+    { question: t('faq.q5') as string, answer: t('faq.a5') as string },
+    { question: t('faq.q6') as string, answer: t('faq.a6') as string },
+  ];
 
   return (
     <>
       <SEO
-        title="DevOps & Cloud Infrastructure Services"
-        description="KreateRevo provides enterprise DevOps services for Cloud and On-Prem environments. Build, automate, and scale your infrastructure with confidence."
-        canonical="/"
+        titleKey="seo.home.title"
+        descKey="seo.home.desc"
+        canonicalPath="/"
         schema={{
           '@context': 'https://schema.org',
           '@graph': [
-            organizationSchema,
+            organizationSchema(language),
             faqSchema(faqs),
           ],
         }}
@@ -58,41 +150,41 @@ export default function Home() {
             <div className="order-2 lg:order-1">
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6">
                 <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-                Based in Germany • Serving EU Clients
+                {t('hero.badge')}
               </div>
               
               <h1 className="font-display font-bold text-display-1 mb-6">
-                <span className="block">Build.</span>
-                <span className="block">Automate.</span>
-                <span className="block text-gradient">Scale.</span>
+                <span className="block">{t('hero.title1')}</span>
+                <span className="block">{t('hero.title2')}</span>
+                <span className="block text-gradient">{t('hero.title3')}</span>
               </h1>
               
               <p className="text-lg lg:text-xl text-muted-foreground mb-8 max-w-lg">
-                DevOps and cloud infrastructure for teams that ship fast without breaking things.
+                {t('hero.subtitle')}
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 mb-10">
-                <Link to="/contact" className="btn-primary">
-                  Book a Free Consultation
+                <Link to={`/${language}/contact`} className="btn-primary">
+                  {t('hero.cta.primary')}
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </Link>
-                <Link to="/services" className="btn-secondary">
-                  View Services
+                <Link to={`/${language}/services`} className="btn-secondary">
+                  {t('hero.cta.secondary')}
                 </Link>
               </div>
               
               <div className="flex flex-col sm:flex-row gap-6 text-sm">
                 <div className="flex items-center gap-2">
                   <Check className="w-5 h-5 text-primary" />
-                  <span>99.99% Uptime</span>
+                  <span>{t('hero.trust.uptime')}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Check className="w-5 h-5 text-primary" />
-                  <span>Enterprise Security</span>
+                  <span>{t('hero.trust.security')}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Check className="w-5 h-5 text-primary" />
-                  <span>Full Automation</span>
+                  <span>{t('hero.trust.automation')}</span>
                 </div>
               </div>
             </div>
@@ -118,32 +210,16 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Trust Strip */}
-      <section className="py-12 border-y border-border/50 bg-charcoal-50/50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-sm text-muted-foreground mb-6 uppercase tracking-wider">
-            Trusted by teams across industries
-          </p>
-          <div className="flex flex-wrap justify-center items-center gap-8 lg:gap-16 opacity-50">
-            {['Fintech', 'E-commerce', 'SaaS', 'Healthcare', 'Manufacturing'].map((industry) => (
-              <span key={industry} className="font-display font-semibold text-lg text-muted-foreground">
-                {industry}
-              </span>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Services Section */}
       <section className="py-20 lg:py-32">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <span className="section-label mb-4 block">Services</span>
+            <span className="section-label mb-4 block">{t('services.label')}</span>
             <h2 className="font-display font-bold text-display-2 mb-4">
-              What We Do
+              {t('services.title')}
             </h2>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              End-to-end DevOps services designed to accelerate your delivery and improve reliability.
+              {t('services.subtitle')}
             </p>
           </div>
           
@@ -153,7 +229,7 @@ export default function Home() {
                 key={service.id}
                 title={service.title}
                 description={service.shortDescription}
-                href={`/services/${service.slug}`}
+                href={`/${language}/services/${service.slug}`}
               />
             ))}
           </div>
@@ -165,15 +241,15 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-start">
             <div>
-              <span className="section-label mb-4 block">Why KreateRevo</span>
+              <span className="section-label mb-4 block">{t('why.label')}</span>
               <h2 className="font-display font-bold text-display-2 mb-6">
-                Built Different.<br />Built Better.
+                {t('why.title')}
               </h2>
               <p className="text-muted-foreground text-lg mb-8">
-                We do not just implement tools—we transform how your team delivers software. Our approach combines technical excellence with operational discipline.
+                {t('why.subtitle')}
               </p>
-              <Link to="/about" className="btn-secondary inline-flex">
-                Learn About Us
+              <Link to={`/${language}/about`} className="btn-secondary inline-flex">
+                {t('why.cta')}
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Link>
             </div>
@@ -200,13 +276,13 @@ export default function Home() {
       {/* Process Section */}
       <section className="py-20 lg:py-32">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <span className="section-label mb-4 block">Our Process</span>
+          <div className="max-w-3xl mx-auto text-center mb-16">
+            <span className="section-label mb-4 block">{t('process.label')}</span>
             <h2 className="font-display font-bold text-display-2 mb-4">
-              How We Work
+              {t('process.title')}
             </h2>
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              A clear plan, built around your risks and priorities. From discovery to operation, we ensure smooth delivery.
+            <p className="text-muted-foreground text-lg">
+              {t('process.subtitle')}
             </p>
           </div>
           
@@ -223,123 +299,109 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Stats Section */}
+      {/* Experience & Engineering Approach Section */}
       <section className="py-20 lg:py-32 bg-charcoal-50/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-3 gap-6">
-            <StatCard value="99.99%" label="Uptime delivered across production environments" />
-            <StatCard value="10x" label="Faster deployments after pipeline modernization" />
-            <StatCard value="40%" label="Average cost reduction through optimization" />
-          </div>
-          
-          <div className="mt-12 text-center">
-            <ModuleCard className="inline-block p-8 max-w-3xl" showPort={false}>
-              <p className="font-display font-semibold text-xl lg:text-2xl mb-4">
-                We turn complex infrastructure into a competitive advantage.
-              </p>
-              <Link to="/case-studies" className="btn-secondary inline-flex">
-                See How We Work
-                <ArrowRight className="w-4 h-4 ml-2" />
-              </Link>
-            </ModuleCard>
-          </div>
-        </div>
-      </section>
-
-      {/* Case Studies Section */}
-      <section className="py-20 lg:py-32">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12">
-            <div>
-              <span className="section-label mb-4 block">Selected Work</span>
-              <h2 className="font-display font-bold text-display-2">
-                Case Studies
-              </h2>
-            </div>
-            <Link to="/case-studies" className="btn-secondary inline-flex self-start">
-              View All Cases
-              <ArrowRight className="w-4 h-4 ml-2" />
-            </Link>
-          </div>
-          
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {caseStudies.slice(0, 3).map((study) => (
-              <Link key={study.id} to="/case-studies" className="group">
-                <ModuleCard className="h-full p-6 hover:-translate-y-1 hover:shadow-card transition-all duration-300">
-                  <div className="flex flex-col h-full">
-                    <div className="flex items-center gap-2 mb-4">
-                      <span className="px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium">
-                        {study.industry}
-                      </span>
-                    </div>
-                    <h3 className="font-display font-semibold text-xl mb-2 group-hover:text-primary transition-colors">
-                      {study.title}
-                    </h3>
-                    <p className="text-muted-foreground text-sm mb-4 flex-grow">
-                      {study.challenge.slice(0, 120)}...
-                    </p>
-                    <div className="flex flex-wrap gap-2">
-                      {study.results.slice(0, 2).map((result, idx) => (
-                        <span 
-                          key={idx} 
-                          className="text-xs font-medium text-primary bg-primary/10 px-2 py-1 rounded"
-                        >
-                          {result.value} {result.metric}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </ModuleCard>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Testimonials Section */}
-      <section className="py-20 lg:py-32 bg-charcoal-50/30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <span className="section-label mb-4 block">Testimonials</span>
+          <div className="max-w-3xl mx-auto text-center mb-16">
+            <span className="section-label mb-4 block">
+              {language === 'de' ? 'Erfahrung' : 'Experience'}
+            </span>
             <h2 className="font-display font-bold text-display-2 mb-4">
-              What Clients Say
+              {language === 'de' ? 'Erfahrung & Engineering-Ansatz' : 'Experience & Engineering Approach'}
             </h2>
-          </div>
-          
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {testimonials.map((testimonial) => (
-              <TestimonialCard
-                key={testimonial.id}
-                quote={testimonial.quote}
-                author={testimonial.author}
-                role={testimonial.role}
-                company={testimonial.company}
-              />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Pricing Section */}
-      <section className="py-20 lg:py-32">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <span className="section-label mb-4 block">Pricing</span>
-            <h2 className="font-display font-bold text-display-2 mb-4">
-              Flexible Engagement
-            </h2>
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              Choose the engagement model that fits your needs. All plans include documentation and knowledge transfer.
+            <p className="text-muted-foreground text-lg">
+              {language === 'de' 
+                ? 'Unser Ansatz basiert auf bewährten Engineering-Prinzipien und modernen DevOps-Praktiken.'
+                : 'Our approach is based on proven engineering principles and modern DevOps practices.'}
             </p>
           </div>
           
-          <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
-            {pricingPlans.map((plan) => (
-              <PricingCard
-                key={plan.name}
-                {...plan}
-                onCtaClick={scrollToContact}
-              />
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {engineeringApproach.map((item, index) => (
+              <ModuleCard key={index} className="p-6" showPort={false}>
+                <div className="flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <item.icon className="w-5 h-5 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-display font-semibold text-lg mb-2">{item.title}</h3>
+                    <p className="text-muted-foreground text-sm">{item.description}</p>
+                  </div>
+                </div>
+              </ModuleCard>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Engagement Models Section */}
+      <section className="py-20 lg:py-32">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-3xl mx-auto text-center mb-16">
+            <span className="section-label mb-4 block">{t('engagement.label')}</span>
+            <h2 className="font-display font-bold text-display-2 mb-4">
+              {t('engagement.title')}
+            </h2>
+            <p className="text-muted-foreground text-lg">
+              {t('engagement.subtitle')}
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-2 gap-6">
+            {engagementModels.map((model, index) => (
+              <ModuleCard key={index} className="p-8 h-full" showPort={false}>
+                <div className="flex flex-col h-full">
+                  <div className="flex items-center gap-4 mb-6">
+                    <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                      <model.icon className="w-6 h-6 text-primary" />
+                    </div>
+                    <h3 className="font-display font-semibold text-xl">{model.title}</h3>
+                  </div>
+                  
+                  <div className="space-y-4 flex-grow">
+                    <div>
+                      <h4 className="text-sm font-medium text-muted-foreground uppercase tracking-wider mb-2">
+                        {language === 'de' ? 'Für Wen' : "Who It's For"}
+                      </h4>
+                      <p className="text-sm text-foreground">{model.whoFor}</p>
+                    </div>
+                    
+                    <div>
+                      <h4 className="text-sm font-medium text-muted-foreground uppercase tracking-wider mb-2">
+                        {language === 'de' ? 'Gelöste Probleme' : 'Problems We Solve'}
+                      </h4>
+                      <ul className="space-y-1">
+                        {model.problems.map((problem, idx) => (
+                          <li key={idx} className="text-sm text-foreground flex items-start gap-2">
+                            <span className="text-primary mt-1">•</span>
+                            {problem}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    
+                    <div>
+                      <h4 className="text-sm font-medium text-muted-foreground uppercase tracking-wider mb-2">
+                        {language === 'de' ? 'Erwartete Ergebnisse' : 'Expected Outcomes'}
+                      </h4>
+                      <ul className="space-y-1">
+                        {model.outcomes.map((outcome, idx) => (
+                          <li key={idx} className="text-sm text-foreground flex items-start gap-2">
+                            <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                            {outcome}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                  
+                  <div className="mt-6 pt-6 border-t border-border/30">
+                    <Link to={`/${language}/contact`} className="btn-primary w-full inline-flex justify-center">
+                      {t('engagement.cta')}
+                    </Link>
+                  </div>
+                </div>
+              </ModuleCard>
             ))}
           </div>
         </div>
@@ -349,9 +411,9 @@ export default function Home() {
       <section className="py-20 lg:py-32 bg-charcoal-50/30">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <span className="section-label mb-4 block">FAQ</span>
+            <span className="section-label mb-4 block">{t('faq.label')}</span>
             <h2 className="font-display font-bold text-display-2 mb-4">
-              Common Questions
+              {t('faq.title')}
             </h2>
           </div>
           
@@ -379,12 +441,12 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-start">
             <div>
-              <span className="section-label mb-4 block">Get in Touch</span>
+              <span className="section-label mb-4 block">{t('contact.label')}</span>
               <h2 className="font-display font-bold text-display-2 mb-4">
-                Let's Build Something Reliable
+                {t('contact.title')}
               </h2>
               <p className="text-muted-foreground text-lg mb-8">
-                Tell us what you are shipping. We will reply within one business day.
+                {t('contact.subtitle')}
               </p>
               
               <div className="space-y-6">
@@ -393,8 +455,8 @@ export default function Home() {
                     <Check className="w-5 h-5 text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-medium mb-1">Free Initial Consultation</h3>
-                    <p className="text-sm text-muted-foreground">30-minute call to discuss your challenges and goals.</p>
+                    <h3 className="font-medium mb-1">{t('contact.benefit1.title')}</h3>
+                    <p className="text-sm text-muted-foreground">{t('contact.benefit1.desc')}</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
@@ -402,8 +464,8 @@ export default function Home() {
                     <Check className="w-5 h-5 text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-medium mb-1">Detailed Proposal</h3>
-                    <p className="text-sm text-muted-foreground">Clear scope, timeline, and pricing within one week.</p>
+                    <h3 className="font-medium mb-1">{t('contact.benefit2.title')}</h3>
+                    <p className="text-sm text-muted-foreground">{t('contact.benefit2.desc')}</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
@@ -411,8 +473,8 @@ export default function Home() {
                     <Check className="w-5 h-5 text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-medium mb-1">No Long-term Contracts</h3>
-                    <p className="text-sm text-muted-foreground">Flexible engagement with monthly reviews.</p>
+                    <h3 className="font-medium mb-1">{t('contact.benefit3.title')}</h3>
+                    <p className="text-sm text-muted-foreground">{t('contact.benefit3.desc')}</p>
                   </div>
                 </div>
               </div>
@@ -422,15 +484,15 @@ export default function Home() {
               <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
                 <div className="grid sm:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium mb-2">Name</label>
+                    <label className="block text-sm font-medium mb-2">{t('contact.form.name')}</label>
                     <input
                       type="text"
                       className="w-full px-4 py-3 rounded-xl bg-secondary border border-border focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
-                      placeholder="Your name"
+                      placeholder={language === 'de' ? 'Ihr Name' : 'Your name'}
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium mb-2">Email</label>
+                    <label className="block text-sm font-medium mb-2">{t('contact.form.email')}</label>
                     <input
                       type="email"
                       className="w-full px-4 py-3 rounded-xl bg-secondary border border-border focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
@@ -439,32 +501,32 @@ export default function Home() {
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-2">Company</label>
+                  <label className="block text-sm font-medium mb-2">{t('contact.form.company')}</label>
                   <input
                     type="text"
                     className="w-full px-4 py-3 rounded-xl bg-secondary border border-border focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
-                    placeholder="Your company"
+                    placeholder={language === 'de' ? 'Ihr Unternehmen' : 'Your company'}
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-2">Message</label>
+                  <label className="block text-sm font-medium mb-2">{t('contact.form.message')}</label>
                   <textarea
                     rows={4}
                     className="w-full px-4 py-3 rounded-xl bg-secondary border border-border focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors resize-none"
-                    placeholder="Tell us about your project..."
+                    placeholder={language === 'de' ? 'Erzählen Sie uns von Ihrem Projekt...' : 'Tell us about your project...'}
                   />
                 </div>
                 <button type="submit" className="w-full btn-primary">
-                  Send Message
+                  {t('contact.form.submit')}
                 </button>
                 <p className="text-center text-sm text-muted-foreground">
-                  Prefer to book directly?{' '}
+                  {t('contact.form.schedule')}{' '}
                   <button 
                     type="button"
                     className="text-primary hover:underline"
                     onClick={() => alert('Calendly integration placeholder')}
                   >
-                    Schedule a call
+                    {t('contact.form.scheduleLink')}
                   </button>
                 </p>
               </form>

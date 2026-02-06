@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Mail, MapPin, Phone, Calendar, Clock, Check } from 'lucide-react';
 import SEO from '@/components/SEO';
 import { ModuleCard } from '@/components/ModuleCard';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { toast } from 'sonner';
 
 export default function Contact() {
@@ -12,15 +13,18 @@ export default function Contact() {
     message: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { language, t } = useLanguage();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Simulate form submission
     await new Promise(resolve => setTimeout(resolve, 1000));
     
-    toast.success('Message sent! We will get back to you within one business day.');
+    toast.success(language === 'de' 
+      ? 'Nachricht gesendet! Wir melden uns innerhalb eines Werktags.' 
+      : 'Message sent! We will get back to you within one business day.'
+    );
     setFormData({ name: '', email: '', company: '', message: '' });
     setIsSubmitting(false);
   };
@@ -32,24 +36,31 @@ export default function Contact() {
     }));
   };
 
+  const expectItems = [
+    t('contact.expect.1'),
+    t('contact.expect.2'),
+    t('contact.expect.3'),
+    t('contact.expect.4'),
+  ];
+
   return (
     <>
       <SEO
-        title="Contact Us"
-        description="Get in touch with KreateRevo. Book a free consultation or request a quote for your DevOps and cloud infrastructure needs."
-        canonical="/contact"
+        titleKey="seo.contact.title"
+        descKey="seo.contact.desc"
+        canonicalPath="/contact"
       />
 
       {/* Hero Section */}
       <section className="pt-32 pb-20 lg:pt-40 lg:pb-32">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl">
-            <span className="section-label mb-4 block">Contact</span>
+            <span className="section-label mb-4 block">{t('nav.contact')}</span>
             <h1 className="font-display font-bold text-display-1 mb-6">
-              Let's Build Something Reliable
+              {t('contact.hero.title')}
             </h1>
             <p className="text-lg lg:text-xl text-muted-foreground">
-              Tell us what you are shipping. We will reply within one business day.
+              {t('contact.hero.subtitle')}
             </p>
           </div>
         </div>
@@ -62,7 +73,7 @@ export default function Contact() {
             {/* Contact Info */}
             <div>
               <h2 className="font-display font-semibold text-2xl mb-8">
-                Get in Touch
+                {t('contact.info.title')}
               </h2>
 
               <div className="space-y-6 mb-12">
@@ -71,7 +82,7 @@ export default function Contact() {
                     <Mail className="w-5 h-5 text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-medium mb-1">Email</h3>
+                    <h3 className="font-medium mb-1">{t('contact.info.email')}</h3>
                     <a 
                       href="mailto:info@kreaterevo.com" 
                       className="text-muted-foreground hover:text-primary transition-colors"
@@ -86,7 +97,7 @@ export default function Contact() {
                     <Phone className="w-5 h-5 text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-medium mb-1">Phone</h3>
+                    <h3 className="font-medium mb-1">{t('contact.info.phone')}</h3>
                     <a 
                       href="tel:+4915906702779" 
                       className="text-muted-foreground hover:text-primary transition-colors"
@@ -101,11 +112,11 @@ export default function Contact() {
                     <MapPin className="w-5 h-5 text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-medium mb-1">Location</h3>
+                    <h3 className="font-medium mb-1">{t('contact.info.location')}</h3>
                     <p className="text-muted-foreground">
                       Residenzstraße 133A<br />
                       13409 Berlin, Germany<br />
-                      Serving clients across the EU
+                      {language === 'de' ? 'EU-weite Kunden' : 'Serving clients across the EU'}
                     </p>
                   </div>
                 </div>
@@ -115,10 +126,10 @@ export default function Contact() {
                     <Clock className="w-5 h-5 text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-medium mb-1">Business Hours</h3>
+                    <h3 className="font-medium mb-1">{t('contact.info.hours')}</h3>
                     <p className="text-muted-foreground">
-                      Monday - Friday<br />
-                      09:00 - 18:00 CET
+                      {t('contact.info.hoursValue')}<br />
+                      {t('contact.info.hoursTime')}
                     </p>
                   </div>
                 </div>
@@ -126,13 +137,8 @@ export default function Contact() {
 
               {/* Quick Benefits */}
               <div className="space-y-4">
-                <h3 className="font-medium mb-4">What to Expect</h3>
-                {[
-                  'Free initial consultation (30 minutes)',
-                  'Detailed proposal within one week',
-                  'Clear scope, timeline, and pricing',
-                  'No long-term contracts required'
-                ].map((item, index) => (
+                <h3 className="font-medium mb-4">{t('contact.expect.title')}</h3>
+                {expectItems.map((item, index) => (
                   <div key={index} className="flex items-center gap-3">
                     <Check className="w-5 h-5 text-primary flex-shrink-0" />
                     <span className="text-sm text-muted-foreground">{item}</span>
@@ -144,14 +150,14 @@ export default function Contact() {
             {/* Contact Form */}
             <ModuleCard className="p-8" showPort={false}>
               <h2 className="font-display font-semibold text-xl mb-6">
-                Send a Message
+                {t('contact.form.title')}
               </h2>
 
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid sm:grid-cols-2 gap-6">
                   <div>
                     <label htmlFor="name" className="block text-sm font-medium mb-2">
-                      Name *
+                      {t('contact.form.name')} *
                     </label>
                     <input
                       type="text"
@@ -161,12 +167,12 @@ export default function Contact() {
                       value={formData.name}
                       onChange={handleChange}
                       className="w-full px-4 py-3 rounded-xl bg-secondary border border-border focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
-                      placeholder="Your name"
+                      placeholder={language === 'de' ? 'Ihr Name' : 'Your name'}
                     />
                   </div>
                   <div>
                     <label htmlFor="email" className="block text-sm font-medium mb-2">
-                      Email *
+                      {t('contact.form.email')} *
                     </label>
                     <input
                       type="email"
@@ -183,7 +189,7 @@ export default function Contact() {
 
                 <div>
                   <label htmlFor="company" className="block text-sm font-medium mb-2">
-                    Company
+                    {t('contact.form.company')}
                   </label>
                   <input
                     type="text"
@@ -192,13 +198,13 @@ export default function Contact() {
                     value={formData.company}
                     onChange={handleChange}
                     className="w-full px-4 py-3 rounded-xl bg-secondary border border-border focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
-                    placeholder="Your company"
+                    placeholder={language === 'de' ? 'Ihr Unternehmen' : 'Your company'}
                   />
                 </div>
 
                 <div>
                   <label htmlFor="message" className="block text-sm font-medium mb-2">
-                    Message *
+                    {t('contact.form.message')} *
                   </label>
                   <textarea
                     id="message"
@@ -208,7 +214,7 @@ export default function Contact() {
                     value={formData.message}
                     onChange={handleChange}
                     className="w-full px-4 py-3 rounded-xl bg-secondary border border-border focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors resize-none"
-                    placeholder="Tell us about your project, challenges, and goals..."
+                    placeholder={language === 'de' ? 'Erzählen Sie uns von Ihrem Projekt...' : 'Tell us about your project...'}
                   />
                 </div>
 
@@ -217,20 +223,23 @@ export default function Contact() {
                   disabled={isSubmitting}
                   className="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {isSubmitting ? 'Sending...' : 'Send Message'}
+                  {isSubmitting 
+                    ? (language === 'de' ? 'Wird gesendet...' : 'Sending...') 
+                    : t('contact.form.submit')
+                  }
                 </button>
 
                 <div className="text-center">
                   <p className="text-sm text-muted-foreground mb-3">
-                    Prefer to book directly?
+                    {t('contact.form.schedule')}
                   </p>
                   <button
                     type="button"
-                    onClick={() => toast.info('Calendly integration coming soon!')}
+                    onClick={() => toast.info(language === 'de' ? 'Calendly-Integration demnächst!' : 'Calendly integration coming soon!')}
                     className="inline-flex items-center gap-2 text-primary hover:underline"
                   >
                     <Calendar className="w-4 h-4" />
-                    Schedule a call via Calendly
+                    {t('contact.form.scheduleLink')}
                   </button>
                 </div>
               </form>
@@ -244,7 +253,7 @@ export default function Contact() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="font-display font-bold text-display-3 mb-4">
-              Other Ways to Connect
+              {t('contact.alt.title')}
             </h2>
           </div>
 
@@ -253,15 +262,13 @@ export default function Contact() {
               <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
                 <Calendar className="w-6 h-6 text-primary" />
               </div>
-              <h3 className="font-display font-semibold text-lg mb-2">Book a Call</h3>
-              <p className="text-sm text-muted-foreground mb-4">
-                Schedule a 30-minute consultation at a time that works for you.
-              </p>
+              <h3 className="font-display font-semibold text-lg mb-2">{t('contact.alt.call.title')}</h3>
+              <p className="text-sm text-muted-foreground mb-4">{t('contact.alt.call.desc')}</p>
               <button 
-                onClick={() => toast.info('Calendly integration coming soon!')}
+                onClick={() => toast.info(language === 'de' ? 'Calendly-Integration demnächst!' : 'Calendly integration coming soon!')}
                 className="text-primary text-sm font-medium hover:underline"
               >
-                View Availability
+                {t('contact.alt.call.button')}
               </button>
             </ModuleCard>
 
@@ -269,10 +276,8 @@ export default function Contact() {
               <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
                 <Mail className="w-6 h-6 text-primary" />
               </div>
-              <h3 className="font-display font-semibold text-lg mb-2">Email Us</h3>
-              <p className="text-sm text-muted-foreground mb-4">
-                For general inquiries and proposals.
-              </p>
+              <h3 className="font-display font-semibold text-lg mb-2">{t('contact.alt.email.title')}</h3>
+              <p className="text-sm text-muted-foreground mb-4">{t('contact.alt.email.desc')}</p>
               <a 
                 href="mailto:info@kreaterevo.com"
                 className="text-primary text-sm font-medium hover:underline"
@@ -285,10 +290,8 @@ export default function Contact() {
               <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
                 <Phone className="w-6 h-6 text-primary" />
               </div>
-              <h3 className="font-display font-semibold text-lg mb-2">Call Us</h3>
-              <p className="text-sm text-muted-foreground mb-4">
-                Available during business hours.
-              </p>
+              <h3 className="font-display font-semibold text-lg mb-2">{t('contact.alt.phone.title')}</h3>
+              <p className="text-sm text-muted-foreground mb-4">{t('contact.alt.phone.desc')}</p>
               <a 
                 href="tel:+4915906702779"
                 className="text-primary text-sm font-medium hover:underline"

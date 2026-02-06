@@ -1,0 +1,10 @@
+# Netlify SPA redirect rules
+# Redirect root to English default
+/ /en 301
+
+# Handle language-prefixed routes - all routes serve index.html for SPA
+/en/* /index.html 200
+/de/* /index.html 200
+
+# Fallback for any unmatched routes
+/* /index.html 200

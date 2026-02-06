@@ -1,7 +1,8 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight, TrendingUp, Clock, DollarSign, Shield } from 'lucide-react';
+import { TrendingUp, Clock, DollarSign, Shield } from 'lucide-react';
 import SEO from '@/components/SEO';
 import { ModuleCard } from '@/components/ModuleCard';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { caseStudies } from '@/data/content';
 
 const iconMap: Record<string, React.ElementType> = {
@@ -17,25 +18,33 @@ const iconMap: Record<string, React.ElementType> = {
 };
 
 export default function CaseStudies() {
+  const { language, t } = useLanguage();
+
+  const metrics = [
+    { value: '40%', label: t('cases.metrics.cost') as string, description: t('cases.metrics.costDesc') as string },
+    { value: '10x', label: t('cases.metrics.deploy') as string, description: t('cases.metrics.deployDesc') as string },
+    { value: '70%', label: t('cases.metrics.downtime') as string, description: t('cases.metrics.downtimeDesc') as string },
+    { value: '99.99%', label: t('cases.metrics.uptime') as string, description: t('cases.metrics.uptimeDesc') as string },
+  ];
+
   return (
     <>
       <SEO
-        title="Case Studies"
-        description="See how KreateRevo has helped companies reduce costs, improve uptime, and accelerate deployments."
-        canonical="/case-studies"
+        titleKey="seo.cases.title"
+        descKey="seo.cases.desc"
+        canonicalPath="/case-studies"
       />
 
       {/* Hero Section */}
       <section className="pt-32 pb-20 lg:pt-40 lg:pb-32">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl">
-            <span className="section-label mb-4 block">Case Studies</span>
+            <span className="section-label mb-4 block">{t('nav.caseStudies')}</span>
             <h1 className="font-display font-bold text-display-1 mb-6">
-              Real Results for Real Teams
+              {t('cases.hero.title')}
             </h1>
             <p className="text-lg lg:text-xl text-muted-foreground">
-              See how we have helped companies across industries transform their infrastructure, 
-              reduce costs, and accelerate their delivery pipelines.
+              {t('cases.hero.subtitle')}
             </p>
           </div>
         </div>
@@ -66,7 +75,7 @@ export default function CaseStudies() {
 
                       <div className="mb-8">
                         <h3 className="font-medium text-sm uppercase tracking-wider text-muted-foreground mb-2">
-                          Challenge
+                          {language === 'de' ? 'Herausforderung' : 'Challenge'}
                         </h3>
                         <p className="text-muted-foreground">
                           {study.challenge}
@@ -75,7 +84,7 @@ export default function CaseStudies() {
 
                       <div className="mb-8">
                         <h3 className="font-medium text-sm uppercase tracking-wider text-muted-foreground mb-2">
-                          Approach
+                          {language === 'de' ? 'Ansatz' : 'Approach'}
                         </h3>
                         <ul className="space-y-2">
                           {study.approach.map((step, idx) => (
@@ -102,7 +111,7 @@ export default function CaseStudies() {
                     {/* Results */}
                     <div className="p-8 lg:p-12 bg-charcoal-50/50 border-t lg:border-t-0 lg:border-l border-border">
                       <h3 className="font-medium text-sm uppercase tracking-wider text-muted-foreground mb-6">
-                        Results
+                        {language === 'de' ? 'Ergebnisse' : 'Results'}
                       </h3>
 
                       <div className="space-y-6">
@@ -140,20 +149,12 @@ export default function CaseStudies() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="font-display font-bold text-display-2 mb-4">
-              Average Client Outcomes
+              {t('cases.metrics.title')}
             </h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
-              These are typical results our clients see after engaging with KreateRevo.
-            </p>
           </div>
 
           <div className="grid md:grid-cols-4 gap-6">
-            {[
-              { value: '40%', label: 'Cost Reduction', description: 'Average infrastructure savings' },
-              { value: '10x', label: 'Faster Deployments', description: 'Reduction in release time' },
-              { value: '70%', label: 'Less Downtime', description: 'Improvement in MTTR' },
-              { value: '99.99%', label: 'Uptime', description: 'Achieved availability' },
-            ].map((stat) => (
+            {metrics.map((stat) => (
               <ModuleCard key={stat.label} className="p-6 text-center" showPort={false}>
                 <div className="font-display font-bold text-3xl text-primary mb-2">
                   {stat.value}
@@ -171,14 +172,16 @@ export default function CaseStudies() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <ModuleCard className="inline-block p-12 max-w-2xl" showPort={false}>
             <h2 className="font-display font-bold text-display-3 mb-4">
-              Want Similar Results?
+              {language === 'de' ? 'Ähnliche Ergebnisse Erzielen?' : 'Want Similar Results?'}
             </h2>
             <p className="text-muted-foreground mb-8">
-              Let's discuss how we can help your team achieve similar outcomes.
+              {language === 'de' 
+                ? 'Lassen Sie uns besprechen, wie wir Ihrem Team helfen können, ähnliche Ergebnisse zu erzielen.'
+                : 'Let\'s discuss how we can help your team achieve similar outcomes.'
+              }
             </p>
-            <Link to="/contact" className="btn-primary inline-flex">
-              Start a Conversation
-              <ArrowRight className="w-4 h-4 ml-2" />
+            <Link to={`/${language}/contact`} className="btn-primary inline-flex">
+              {t('cases.cta.button')}
             </Link>
           </ModuleCard>
         </div>
