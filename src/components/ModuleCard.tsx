@@ -9,14 +9,14 @@ interface ModuleCardProps {
   portClassName?: string;
 }
 
-export function ModuleCard({ 
-  children, 
-  className, 
+export function ModuleCard({
+  children,
+  className,
   showPort = true,
-  portClassName 
+  portClassName
 }: ModuleCardProps) {
   return (
-    <div 
+    <div
       className={cn(
         'relative rounded-2xl border-2 bg-card overflow-hidden transition-all duration-300',
         'border-border/30 hover:border-primary/40',
@@ -24,12 +24,12 @@ export function ModuleCard({
       )}
     >
       {showPort && (
-        <div 
+        <div
           className={cn(
             'absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full animate-pulse-port',
             'bg-primary/85',
             portClassName
-          )} 
+          )}
         />
       )}
       <div className={showPort ? 'pl-12' : ''}>
@@ -49,7 +49,7 @@ interface ServiceCardProps {
 export function ServiceCard({ title, description, href, className }: ServiceCardProps) {
   return (
     <Link to={href} className="group block">
-      <ModuleCard 
+      <ModuleCard
         className={cn(
           'h-full p-6 lg:p-8 hover:-translate-y-1 hover:shadow-card transition-all duration-300',
           className
@@ -101,20 +101,20 @@ interface TestimonialCardProps {
   className?: string;
 }
 
-export function TestimonialCard({ 
-  quote, 
-  author, 
-  role, 
-  company, 
-  className 
+export function TestimonialCard({
+  quote,
+  author,
+  role,
+  company,
+  className
 }: TestimonialCardProps) {
   return (
     <ModuleCard className={cn('p-6 lg:p-8', className)}>
       <div className="flex flex-col h-full">
         <div className="mb-6">
-          <svg 
-            className="w-8 h-8 text-primary/40" 
-            fill="currentColor" 
+          <svg
+            className="w-8 h-8 text-primary/40"
+            fill="currentColor"
             viewBox="0 0 24 24"
           >
             <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
@@ -143,15 +143,15 @@ interface ProcessCardProps {
 
 export function ProcessCard({ number, title, description, className }: ProcessCardProps) {
   return (
-    <ModuleCard className={cn('p-6 lg:p-8', className)}>
-      <div className="flex items-start gap-4">
-        <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-          <span className="font-mono font-semibold text-primary text-sm">{number}</span>
+    <ModuleCard showPort={false} className={cn('p-6 lg:p-8', className)}>
+      <div className="flex flex-col items-start gap-4">
+        <div className="flex items-center gap-4">
+          <div className="flex-shrink-0 w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center">
+            <span className="font-mono font-semibold text-primary text-sm">{number}</span>
+          </div>
+          <h3 className="font-display font-semibold text-lg">{title}</h3>
         </div>
-        <div>
-          <h3 className="font-display font-semibold text-lg mb-2">{title}</h3>
-          <p className="text-muted-foreground text-sm">{description}</p>
-        </div>
+        <p className="text-muted-foreground text-sm">{description}</p>
       </div>
     </ModuleCard>
   );
@@ -182,8 +182,8 @@ export function PricingCard({
     <div
       className={cn(
         'relative rounded-2xl border-2 bg-card overflow-hidden',
-        recommended 
-          ? 'border-primary' 
+        recommended
+          ? 'border-primary'
           : 'border-border/30'
       )}
     >
@@ -204,10 +204,10 @@ export function PricingCard({
         <ul className="space-y-3 mb-8">
           {features.map((feature, index) => (
             <li key={index} className="flex items-start gap-3">
-              <svg 
-                className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" 
-                fill="none" 
-                viewBox="0 0 24 24" 
+              <svg
+                className="w-5 h-5 text-primary flex-shrink-0 mt-0.5"
+                fill="none"
+                viewBox="0 0 24 24"
                 stroke="currentColor"
               >
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
