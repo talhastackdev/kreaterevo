@@ -62,19 +62,19 @@ export default function Imprint() {
                   <strong className="text-foreground">{isGerman ? 'Handelsregisternummer:' : 'Commercial Register Number:'}</strong> HRB 283656
                 </p>
               </div>
-              <p className="text-muted-foreground leading-relaxed mt-4 italic">
+              {/* <p className="text-muted-foreground leading-relaxed mt-4 italic">
                 {isGerman 
                   ? 'Hinweis: Die Gesellschaft befindet sich derzeit in Gründung. Die Eintragung in das Handelsregister ist erfolgt.'
                   : 'Note: The company is currently in formation. Registration in the commercial register has been completed.'}
-              </p>
+              </p> */}
             </section>
 
-            <section className="mb-10">
+            {/* <section className="mb-10">
               <h2 className="font-display font-semibold text-2xl mb-4">{isGerman ? 'Umsatzsteuer-ID' : 'VAT ID'}</h2>
               <p className="text-muted-foreground leading-relaxed">
                 <em>{isGerman ? 'Wird nach Eintragung im Handelsregister beantragt.' : 'Will be applied for after commercial registration.'}</em>
               </p>
-            </section>
+            </section> */}
 
             <section className="mb-10">
               <h2 className="font-display font-semibold text-2xl mb-4">{isGerman ? 'Verantwortlich für den Inhalt' : 'Responsible for Content'}</h2>
