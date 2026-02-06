@@ -28,7 +28,7 @@ export default function Imprint() {
               <h2 className="font-display font-semibold text-2xl mb-4">{isGerman ? 'Angaben gemäß § 5 TMG' : 'Information according to § 5 TMG'}</h2>
               <div className="bg-card border border-border/30 rounded-xl p-6">
                 <p className="text-muted-foreground leading-relaxed">
-                  <strong className="text-foreground">KreateRevo UG (haftungsbeschränkt) i.G.</strong><br />
+                  <strong className="text-foreground">KreateRevo UG (haftungsbeschränkt)</strong><br />
                   Residenzstraße 133A<br />
                   13409 Berlin<br />
                   Germany
