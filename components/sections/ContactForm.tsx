@@ -7,7 +7,7 @@ import { toast } from 'sonner';
 import type { Language } from '@/lib/dictionaries';
 
 interface ContactFormLabels {
-  title: string;
+  title?: string;
   name: string;
   email: string;
   company: string;
@@ -20,9 +20,10 @@ interface ContactFormLabels {
 interface ContactFormProps {
   lang: Language;
   labels: ContactFormLabels;
+  scheduleWithIcon?: boolean;
 }
 
-export default function ContactForm({ lang, labels }: ContactFormProps) {
+export default function ContactForm({ lang, labels, scheduleWithIcon = false }: ContactFormProps) {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -52,7 +53,9 @@ export default function ContactForm({ lang, labels }: ContactFormProps) {
 
   return (
     <ModuleCard className="p-8" showPort={false}>
-      <h2 className="font-display font-semibold text-xl mb-6">{labels.title}</h2>
+      {labels.title && (
+        <h2 className="font-display font-semibold text-xl mb-6">{labels.title}</h2>
+      )}
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid sm:grid-cols-2 gap-6">
@@ -127,21 +130,38 @@ export default function ContactForm({ lang, labels }: ContactFormProps) {
           {isSubmitting ? (lang === 'de' ? 'Wird gesendet...' : 'Sending...') : labels.submit}
         </button>
 
-        <div className="text-center">
-          <p className="text-sm text-muted-foreground mb-3">{labels.schedule}</p>
-          <button
-            type="button"
-            onClick={() =>
-              toast.info(
-                lang === 'de' ? 'Calendly-Integration demnächst!' : 'Calendly integration coming soon!'
-              )
-            }
-            className="inline-flex items-center gap-2 text-primary hover:underline"
-          >
-            <Calendar className="w-4 h-4" />
-            {labels.scheduleLink}
-          </button>
-        </div>
+        {scheduleWithIcon ? (
+          <div className="text-center">
+            <p className="text-sm text-muted-foreground mb-3">{labels.schedule}</p>
+            <button
+              type="button"
+              onClick={() =>
+                toast.info(
+                  lang === 'de' ? 'Calendly-Integration demnächst!' : 'Calendly integration coming soon!'
+                )
+              }
+              className="inline-flex items-center gap-2 text-primary hover:underline"
+            >
+              <Calendar className="w-4 h-4" />
+              {labels.scheduleLink}
+            </button>
+          </div>
+        ) : (
+          <p className="text-center text-sm text-muted-foreground">
+            {labels.schedule}{' '}
+            <button
+              type="button"
+              onClick={() =>
+                toast.info(
+                  lang === 'de' ? 'Calendly-Integration demnächst!' : 'Calendly integration coming soon!'
+                )
+              }
+              className="text-primary hover:underline"
+            >
+              {labels.scheduleLink}
+            </button>
+          </p>
+        )}
       </form>
     </ModuleCard>
   );

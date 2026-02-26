@@ -3,6 +3,7 @@ import { Mail, MapPin, Phone, Calendar, Clock, Check } from 'lucide-react';
 import { getDictionary, SUPPORTED_LANGUAGES, type Language } from '@/lib/dictionaries';
 import { ModuleCard } from '@/components/ModuleCard';
 import ContactForm from '@/components/sections/ContactForm';
+import ScheduleCallButton from '@/components/sections/ScheduleCallButton';
 
 export function generateStaticParams() {
   return SUPPORTED_LANGUAGES.map((lang) => ({ lang }));
@@ -146,7 +147,7 @@ export default async function ContactPage({
             </div>
 
             {/* Contact Form (client component) */}
-            <ContactForm lang={lang as Language} labels={formLabels} />
+            <ContactForm lang={lang as Language} labels={formLabels} scheduleWithIcon />
           </div>
         </div>
       </section>
@@ -164,7 +165,7 @@ export default async function ContactPage({
               </div>
               <h3 className="font-display font-semibold text-lg mb-2">{dict['contact.alt.call.title']}</h3>
               <p className="text-sm text-muted-foreground mb-4">{dict['contact.alt.call.desc']}</p>
-              <span className="text-primary text-sm font-medium">{dict['contact.alt.call.button']}</span>
+              <ScheduleCallButton lang={lang as Language} label={dict['contact.alt.call.button']} />
             </ModuleCard>
             <ModuleCard className="p-8 text-center" showPort={false}>
               <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mx-auto mb-4">

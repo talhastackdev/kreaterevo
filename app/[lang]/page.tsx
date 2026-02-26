@@ -5,6 +5,7 @@ import { getDictionary, SUPPORTED_LANGUAGES, type Language } from '@/lib/diction
 import { ModuleCard, ProcessCard, ServiceCard } from '@/components/ModuleCard';
 import HeroSection from '@/components/sections/HeroSection';
 import FAQAccordion from '@/components/sections/FAQAccordion';
+import ContactForm from '@/components/sections/ContactForm';
 import { organizationSchema, faqSchema } from '@/lib/metadata';
 import { services, whyChooseUs } from '@/data/content';
 
@@ -306,7 +307,7 @@ export default async function HomePage({
               <span className="section-label mb-4 block">{dict['contact.label']}</span>
               <h2 className="font-display font-bold text-display-2 mb-4">{dict['contact.title']}</h2>
               <p className="text-muted-foreground text-lg mb-8">{dict['contact.subtitle']}</p>
-              <div className="space-y-6 mb-8">
+              <div className="space-y-6">
                 <div className="flex items-start gap-4">
                   <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
                     <Check className="w-5 h-5 text-primary" />
@@ -335,21 +336,19 @@ export default async function HomePage({
                   </div>
                 </div>
               </div>
-              <Link href={`/${lang}/contact`} className="btn-primary inline-flex">
-                {dict['hero.cta.primary']}
-                <ArrowRight className="w-4 h-4 ml-2" />
-              </Link>
             </div>
-            <ModuleCard className="p-8" showPort={false}>
-              <h3 className="font-display font-semibold text-xl mb-4">
-                {lang === 'de' ? 'Bereit anzufangen?' : 'Ready to get started?'}
-              </h3>
-              <p className="text-muted-foreground mb-6">{dict['contact.subtitle']}</p>
-              <Link href={`/${lang}/contact`} className="btn-primary w-full inline-flex justify-center">
-                {dict['contact.form.submit']}
-                <ArrowRight className="w-4 h-4 ml-2" />
-              </Link>
-            </ModuleCard>
+            <ContactForm
+              lang={lang as Language}
+              labels={{
+                name: dict['contact.form.name'],
+                email: dict['contact.form.email'],
+                company: dict['contact.form.company'],
+                message: dict['contact.form.message'],
+                submit: dict['contact.form.submit'],
+                schedule: dict['contact.form.schedule'],
+                scheduleLink: dict['contact.form.scheduleLink'],
+              }}
+            />
           </div>
         </div>
       </section>
