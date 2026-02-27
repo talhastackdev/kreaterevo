@@ -1,6 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { usePathname } from 'next/navigation';
 import { Calendar } from 'lucide-react';
 import { ModuleCard } from '@/components/ModuleCard';
 import { toast } from 'sonner';
@@ -23,33 +26,66 @@ interface ContactFormProps {
   scheduleWithIcon?: boolean;
 }
 
-export default function ContactForm({ lang, labels, scheduleWithIcon = false }: ContactFormProps) {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    company: '',
-    message: '',
+const buildSchema = (lang: Language) =>
+  z.object({
+    name: z
+      .string()
+      .min(2, lang === 'de' ? 'Name muss mindestens 2 Zeichen lang sein.' : 'Name must be at least 2 characters.'),
+    email: z
+      .string()
+      .email(lang === 'de' ? 'Bitte geben Sie eine gültige E-Mail-Adresse ein.' : 'Please enter a valid email address.'),
+    company: z.string().optional(),
+    message: z
+      .string()
+      .min(10, lang === 'de' ? 'Nachricht muss mindestens 10 Zeichen lang sein.' : 'Message must be at least 10 characters.'),
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
+type FormData = z.infer<ReturnType<typeof buildSchema>>;
 
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+export default function ContactForm({ lang, labels, scheduleWithIcon = false }: ContactFormProps) {
+  const pathname = usePathname();
+  const schema = buildSchema(lang);
 
-    toast.success(
-      lang === 'de'
-        ? 'Nachricht gesendet! Wir melden uns innerhalb eines Werktags.'
-        : 'Message sent! We will get back to you within one business day.'
-    );
-    setFormData({ name: '', email: '', company: '', message: '' });
-    setIsSubmitting(false);
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm<FormData>({
+    resolver: zodResolver(schema),
+  });
+
+  const onSubmit = async (data: FormData) => {
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...data, source: pathname }),
+      });
+
+      if (!res.ok) throw new Error('Failed to send');
+
+      toast.success(
+        lang === 'de'
+          ? 'Nachricht gesendet! Wir melden uns innerhalb eines Werktags.'
+          : 'Message sent! We will get back to you within one business day.'
+      );
+      reset();
+    } catch {
+      toast.error(
+        lang === 'de'
+          ? 'Fehler beim Senden. Bitte versuchen Sie es erneut.'
+          : 'Failed to send message. Please try again.'
+      );
+    }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  };
+  const inputClass = (hasError: boolean) =>
+    `w-full px-4 py-3 rounded-xl bg-secondary border outline-none transition-colors ${
+      hasError
+        ? 'border-destructive focus:border-destructive focus:ring-1 focus:ring-destructive'
+        : 'border-border focus:border-primary focus:ring-1 focus:ring-primary'
+    }`;
 
   return (
     <ModuleCard className="p-8" showPort={false}>
@@ -57,7 +93,7 @@ export default function ContactForm({ lang, labels, scheduleWithIcon = false }: 
         <h2 className="font-display font-semibold text-xl mb-6">{labels.title}</h2>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6" noValidate>
         <div className="grid sm:grid-cols-2 gap-6">
           <div>
             <label htmlFor="name" className="block text-sm font-medium mb-2">
@@ -66,13 +102,13 @@ export default function ContactForm({ lang, labels, scheduleWithIcon = false }: 
             <input
               type="text"
               id="name"
-              name="name"
-              required
-              value={formData.name}
-              onChange={handleChange}
-              className="w-full px-4 py-3 rounded-xl bg-secondary border border-border focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
               placeholder={lang === 'de' ? 'Ihr Name' : 'Your name'}
+              className={inputClass(!!errors.name)}
+              {...register('name')}
             />
+            {errors.name && (
+              <p className="mt-1.5 text-xs text-destructive">{errors.name.message}</p>
+            )}
           </div>
           <div>
             <label htmlFor="email" className="block text-sm font-medium mb-2">
@@ -81,13 +117,13 @@ export default function ContactForm({ lang, labels, scheduleWithIcon = false }: 
             <input
               type="email"
               id="email"
-              name="email"
-              required
-              value={formData.email}
-              onChange={handleChange}
-              className="w-full px-4 py-3 rounded-xl bg-secondary border border-border focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
               placeholder="you@company.com"
+              className={inputClass(!!errors.email)}
+              {...register('email')}
             />
+            {errors.email && (
+              <p className="mt-1.5 text-xs text-destructive">{errors.email.message}</p>
+            )}
           </div>
         </div>
 
@@ -98,11 +134,9 @@ export default function ContactForm({ lang, labels, scheduleWithIcon = false }: 
           <input
             type="text"
             id="company"
-            name="company"
-            value={formData.company}
-            onChange={handleChange}
-            className="w-full px-4 py-3 rounded-xl bg-secondary border border-border focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
             placeholder={lang === 'de' ? 'Ihr Unternehmen' : 'Your company'}
+            className={inputClass(false)}
+            {...register('company')}
           />
         </div>
 
@@ -112,14 +146,14 @@ export default function ContactForm({ lang, labels, scheduleWithIcon = false }: 
           </label>
           <textarea
             id="message"
-            name="message"
-            required
             rows={5}
-            value={formData.message}
-            onChange={handleChange}
-            className="w-full px-4 py-3 rounded-xl bg-secondary border border-border focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors resize-none"
             placeholder={lang === 'de' ? 'Erzählen Sie uns von Ihrem Projekt...' : 'Tell us about your project...'}
+            className={`${inputClass(!!errors.message)} resize-none`}
+            {...register('message')}
           />
+          {errors.message && (
+            <p className="mt-1.5 text-xs text-destructive">{errors.message.message}</p>
+          )}
         </div>
 
         <button
