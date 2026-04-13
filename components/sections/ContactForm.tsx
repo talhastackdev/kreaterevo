@@ -8,6 +8,7 @@ import { Calendar } from 'lucide-react';
 import { ModuleCard } from '@/components/ModuleCard';
 import { toast } from 'sonner';
 import type { Language } from '@/lib/dictionaries';
+import { submitContactForm } from '@/services/contactService';
 
 interface ContactFormLabels {
   title?: string;
@@ -57,13 +58,12 @@ export default function ContactForm({ lang, labels, scheduleWithIcon = false }: 
 
   const onSubmit = async (data: FormData) => {
     try {
-      const res = await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...data, source: pathname }),
+      const result = await submitContactForm({
+        ...data,
+        source: pathname || undefined,
       });
 
-      if (!res.ok) throw new Error('Failed to send');
+      if (!result.success) throw new Error(result.message);
 
       toast.success(
         lang === 'de'
